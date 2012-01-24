@@ -90,21 +90,50 @@ class TrinityAdmin
 
 	function AuthAdminUser($user, $pass)
         {
-                $qry = "SELECT id, acp FROM ".$this->logondb.".account ";
+                $qry = "SELECT id";
+		if ($this->sitedb != "")
+		{
+			$qry .= ", acp ";
+		}
+		$qry .= "FROM ".$this->logondb.".account ";
+		if ($this->sitedb == "")
+		{
+			$qry .= "LEFT JOIN ".$this->logondb.".account_access ON (account.id = account_access.id) ";
+		}
+		
 		$qry .= "WHERE username = '$user' AND sha_pass_hash = SHA1(CONCAT(UPPER('$user'), ':', UPPER('$pass')))";
                 $res = @mysql_query($qry, $this->DBConn());
+	
+		echo "Q: $qry<BR>";
 
                 if (@mysql_num_rows($res) != "0")
                 {
                         $dat = @mysql_fetch_assoc($res);
-			if ($dat['acp'] == "1")
+			if ($this->sitedb == "")
 			{
-                        	$member['userId'] = $dat['id'];
-                        	$result = $member;
+				// NON Azer
+				if ($dat['gmlevel'] >= 3)
+				{
+					$member['userId'] = $dat['id'];
+					$result = $member;
+				}
+				 else
+				{
+					$result = "fail";
+				}
 			}
 			 else
 			{
-				$result = "fail";
+				// Azer
+				if ($dat['acp'] == "1")
+				{
+                        		$member['userId'] = $dat['id'];
+                        		$result = $member;
+				}
+				 else
+				{
+					$result = "fail";
+				}
 			}
                 }
                  else
