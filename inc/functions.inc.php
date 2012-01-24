@@ -90,14 +90,13 @@ class TrinityAdmin
 
 	function AuthAdminUser($user, $pass)
         {
-                $qry = "SELECT id";
 		if ($this->sitedb != "")
 		{
-			$qry .= ", acp ";
+			$qry = "SELECT id, acp ";
 		}
 		 else
 		{
-			$qry .= " ";
+			$qry = "SELECT * ";
 		}
 		$qry .= "FROM ".$this->logondb.".account ";
 		if ($this->sitedb == "")
