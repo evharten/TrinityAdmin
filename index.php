@@ -152,60 +152,6 @@ if (@$_GET['act'] == "logout")
 						}
 						echo "</table>";
 						echo "<BR>";
-                        echo "<table>";
-                        echo "<tr><td>";
-						echo "This month we invoiced:";
-                        echo "</td><td>";
-						$ym = date("Ym");
-                        $iStart = mktime(0, 0, 0, date("m"), 1, date("Y"));
-                        $iStop = mktime(0, 0, 0, date("m"), date("t"), date("Y"));
-						$resI = @mysql_query("SELECT SUM(InvoiceAmount) AS Totaal FROM Invoices WHERE InvoiceDate BETWEEN '$iStart' AND '$iStop'", $tadm->DB_Conn());
-						$datI = @mysql_fetch_assoc($resI);
-						echo "<B>&euro; " . $datI['Totaal'] . "</B>";					
-                        echo "</td></tr>";
-                        echo "<tr><td colspan=2>&nbsp;</td></tr>";
-                        echo "<tr><td>Today we had a total of </td><td>";
-                        
-                        $start_today = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-                        $end_today = mktime(23, 59, 59, date("m"), date("d"), date("Y"));
-                        
-                        $resT = @mysql_query("SELECT COUNT(InvoiceID) AS TotalOrders, SUM(InvoiceAmount) AS TotalAmount FROM Invoices WHERE InvoiceDate BETWEEN '$start_today' AND '$end_today'", $tadm->DB_Conn());
-                        $datT = @mysql_fetch_assoc($resT);
-                        
-                        echo "<B>".$datT['TotalOrders']."</B> orders.</td></tr>";
-                        if ($datT['TotalAmount'] == "")
-                        {
-                            $todayAmount = "0.00";
-                        }
-                         else
-                        {
-                            $todayAmount = $datT['TotalAmount'];
-                        }
-                        echo "<tr><td>Total amount of invoices today:</td><td><B>&euro; ".$todayAmount."</B></td></tr>";
-                        echo "<tr><td colspan=2>&nbsp;</td></tr>";
-                        
-                        $yesterday = date("Y", strtotime("-1 day"));
-                        
-                        $start_yesterday = mktime(0, 0, 0, date("m", strtotime("-1 day")), date("d", strtotime("-1 day")), date("Y", strtotime("-1 day")));
-                        $end_yesterday = mktime(23, 59, 59, date("m", strtotime("-1 day")), date("d", strtotime("-1 day")), date("Y", strtotime("-1 day")));
-                        
-                        $resY = @mysql_query("SELECT COUNT(InvoiceID) AS TotalOrders, SUM(InvoiceAmount) AS TotalAmount FROM Invoices WHERE InvoiceDate BETWEEN '$start_yesterday' AND '$end_yesterday'", $tadm->DB_Conn());
-                        $datY = @mysql_fetch_assoc($resY);
-                        
-                        echo "<tr><td>Yesterday we had a total of </td><td><B>".$datY['TotalOrders']."</B> orders</td></tr>";
-                        if ($datY['TotalAmount'] == "")
-                        {
-                            $yesterdayAmount = "0.00";
-                        }
-                         else
-                        {
-                            $yesterdayAmount = $datY['TotalAmount'];
-                        }
-                        echo "<tr><td>Total amount of invoices yesterday:</td><td><B>&euro; ".$yesterdayAmount."</B></td></tr>";
-                        
-                        echo "</table>";
-                            
-                    
 					}
 				}
 				?>
