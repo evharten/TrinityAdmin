@@ -1,5 +1,5 @@
 <?php
-@include_once("../../inc/functions.inc.php");
+@include_once("inc/functions.inc.php");
 session_start();
 
 // Last modified: 27012011
@@ -13,14 +13,14 @@ $display_newview = false;
 $display_resultpage = false;
 
 // Start UseNet
-$wwnl = new WoWNL();
-$wwnl->__construct();
+$tadm = new TrinityAdmin();
+$tadm->__construct();
 
 if (@$_GET['act'] == "logout")
 {
 	session_unregister("adminId");
 	session_destroy();
-	header("Location: /mgr/");
+	header("Location: ");
 }
  elseif (@$_SESSION["adminId"])
 {
@@ -52,13 +52,13 @@ if (@$_GET['act'] == "logout")
             $display_overview = false;
             $packageID = stripslashes($_GET['id']);
             $display_editview = true;
-            $packageDetails = $wwnl->GetPackageDetails($packageID);
+            $packageDetails = $tadm->GetPackageDetails($packageID);
             break;;
         case "processedit":
             $display_overview = false;
             $display_resultpage = true;
             $packageID = stripslashes($_POST['id']);
-            $packageDetails = $wwnl->GetPackageDetails($packageID);
+            $packageDetails = $tadm->GetPackageDetails($packageID);
             $packageName = stripslashes($_POST['pkgName']);
             $packagePrice = stripslashes($_POST['pkgPrice']);
             $packageActie = stripslashes($_POST['pkgActie']);
@@ -73,7 +73,7 @@ if (@$_GET['act'] == "logout")
             if ($packageDetails['pkgName'] != $packageName)
             {
                 $updQry = "UPDATE Packages SET pkgName = '$packageName' WHERE pkgId = '$packageID'";
-                if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                if (@mysql_query($updQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Updating packageName: OK<BR>";
                 }
@@ -87,7 +87,7 @@ if (@$_GET['act'] == "logout")
             if ($packageDetails['pkgPrice'] != $packagePrice)
             {
                 $updQry = "UPDATE Packages SET pkgPrice = '$packagePrice' WHERE pkgId = '$packageID'";
-                if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                if (@mysql_query($updQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Updating packagePrice: OK<BR>";
                 }
@@ -101,7 +101,7 @@ if (@$_GET['act'] == "logout")
             if ($packageDetails['pkgActie'] != $packageActie)
             {
                 $updQry = "UPDATE Packages SET pkgActie = '$packageActie' WHERE pkgId = '$packageID'";
-                if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                if (@mysql_query($updQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Updating packageActie: OK<BR>";
                 }
@@ -119,12 +119,12 @@ if (@$_GET['act'] == "logout")
                 $baseDef = $pkgSplit[0];
                 $newDef = $baseDef . ":" . $packageQuota;
                 $updQry = "UPDATE Packages SET pkgDef = '$newDef', pkgQuota = '$packageQuota' WHERE pkgId = '$packageID'";
-                if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                if (@mysql_query($updQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Updating packageQuota: OK<BR>";
                     
                     $uUpdQry = "UPDATE Accounts SET AccountType = '$newDef' WHERE AccountType = '$pkgDef'";
-                    if (@mysql_query($uUpdQry, $wwnl->DB_Conn()))
+                    if (@mysql_query($uUpdQry, $tadm->DB_Conn()))
                     {
                         $resulttext .= "Updating Accounts renaming old AccountType $pkgDef to $newDef&nbsp;: OK<BR>";
                     }
@@ -155,14 +155,14 @@ if (@$_GET['act'] == "logout")
                         $optionPrice = "0.000";
                     }                    
                     
-                    $optTemp = @mysql_query("SELECT optionPrice, optionActie FROM packageOptions WHERE optionID = '$optionID'", $wwnl->DB_Conn());
+                    $optTemp = @mysql_query("SELECT optionPrice, optionActie FROM packageOptions WHERE optionID = '$optionID'", $tadm->DB_Conn());
                     $optTempDat = @mysql_fetch_assoc($optTemp);
                     
                     if ($optTempDat['optionPrice'] != $optionPrice)
                     {
                         // Option price updaten
                         $updQry = "UPDATE packageOptions SET optionPrice = '$optionPrice' WHERE optionID = '$optionID'";
-                        if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                        if (@mysql_query($updQry, $tadm->DB_Conn()))
                         {
                             $resulttext .= "Updating optionID $optionID: optionPrice Updated.<BR>";
                         }
@@ -176,7 +176,7 @@ if (@$_GET['act'] == "logout")
                     {
                         // optionActie updaten
                         $updQry = "UPDATE packageOptions SET optionActie = '$optionACtie' WHERE optionID = '$optionID'";
-                        if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                        if (@mysql_query($updQry, $tadm->DB_Conn()))
                         {
                             $resulttext .= "Updating optionID $optionID: optionActie Updated.<BR>";
                         }
@@ -193,7 +193,7 @@ if (@$_GET['act'] == "logout")
             $display_overview = false;
             $display_deleteview = true;
             $packageID = stripslashes($_GET['id']);
-            $packageDetails = $wwnl->GetPackageDetails($packageID);
+            $packageDetails = $tadm->GetPackageDetails($packageID);
             
             $hashFrom = $packageID . "-" . $packageDetails['pkgName'];
             $hashToken = md5($hashFrom);            
@@ -203,7 +203,7 @@ if (@$_GET['act'] == "logout")
             $display_overview = false;
             $display_resultpage = true;
             $packageID = stripslashes($_GET['id']);
-            $packageDetails = $wwnl->GetPackageDetails($packageID);
+            $packageDetails = $tadm->GetPackageDetails($packageID);
             $token = stripslashes($_GET['token']);
             
             $tempToken = md5($packageID . "-" . $packageDetails['pkgName']);
@@ -213,7 +213,7 @@ if (@$_GET['act'] == "logout")
                 // Delete authorization OK
                 $pkgDef = $packageDetails['pkgDef'];
                 
-                $usersWithDef = @mysql_num_rows(@mysql_query("SELECT userId FROM Accounts WHERE AccountType = '$pkgDef'", $wwnl->DB_Conn()));
+                $usersWithDef = @mysql_num_rows(@mysql_query("SELECT userId FROM Accounts WHERE AccountType = '$pkgDef'", $tadm->DB_Conn()));
                 
                 if ($usersWithDef > 0)
                 {
@@ -223,7 +223,7 @@ if (@$_GET['act'] == "logout")
                 {
                     // We can delete it!
                     $delQry = "DELETE FROM Packages WHERE pkgId = '$packageID'";
-                    if (@mysql_query($delQry, $wwnl->DB_Conn()))
+                    if (@mysql_query($delQry, $tadm->DB_Conn()))
                     {
                         $resulttext .= "Deleting packageID $packageID&nbsp;: OK";
                     }
@@ -264,7 +264,7 @@ if (@$_GET['act'] == "logout")
             $newQry = "INSERT INTO Packages VALUES ";
             $newQry .= "('', '$packageName', '$newReaderDef', '$packageQuota', '$packagePrice', 'xsnews', '$packageActie')";
            
-            if (@mysql_query($newQry, $wwnl->DB_Conn()))
+            if (@mysql_query($newQry, $tadm->DB_Conn()))
             {
                 $resulttext .= "Creating new block account: OK<BR>";
             }
@@ -287,12 +287,12 @@ if (@$_GET['act'] == "logout")
 	$userName = $_POST['userName'];
 	$userPass = $_POST['userPass'];
 	
-	$loginResult = $wwnl->AuthAdminUser($userName, $userPass);
+	$loginResult = $tadm->AuthAdminUser($userName, $userPass);
 	
 	if ($loginResult != "fail")
 	{
 		$_SESSION['adminId'] = $loginResult['userId'];
-		header("Location: /mgr/index.php");
+		header("Location: index.php");
 	}
 	 else
 	{
@@ -307,7 +307,7 @@ if (@$_GET['act'] == "logout")
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><?php echo $wwnl->siteName; ?> | News</title>
+		<title><?php echo $tadm->siteName; ?> | News</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta http-equiv="Expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 		<meta http-equiv="Pragma" content="no-cache" />
@@ -320,7 +320,7 @@ if (@$_GET['act'] == "logout")
 		<div class="gt-hd clearfix">
 			<!-- logo -->
 			<div class="gt-logo">
-				<?php echo $wwnl->siteName; ?> - Admin Control Panel
+				<?php echo $tadm->siteName; ?> - Admin Control Panel
 			</div>
 			<!-- / logo -->
 			
@@ -331,20 +331,20 @@ if (@$_GET['act'] == "logout")
 					if ($loggedin == true)
 					{
 					?>
-                                        <li><a href="/mgr/index.php">Home</a></li>
-                                        <li><a href="/mgr/accounts.php">Accounts</a></li>
-                                        <li><a href="/mgr/char_r1.php">Chars Nebuchadnezzar</a></li>
-                                        <li><a href="/mgr/char_r2.php">Chars Icharus</a></li>
-                                        <li><a href="/mgr/news.php"><font color=red>Site News</font></a></li>
-                                        <li><a href="/mgr/newsletter.php">Newsletters</a></li>
-                                        <li><a href="/mgr/logs.php">Logs</a></li>
-                                        <li><a href="/mgr/index.php?act=logout">Logout</a></li>
+                                        <li><a href="index.php">Home</a></li>
+                                        <li><a href="accounts.php">Accounts</a></li>
+                                        <li><a href="char_r1.php">Chars Nebuchadnezzar</a></li>
+                                        <li><a href="char_r2.php">Chars Icharus</a></li>
+                                        <li><a href="news.php"><font color=red>Site News</font></a></li>
+                                        <li><a href="newsletter.php">Newsletters</a></li>
+                                        <li><a href="logs.php">Logs</a></li>
+                                        <li><a href="index.php?act=logout">Logout</a></li>
 					<?php
 					}
 					 else
 					{
 					?>
-					<li><a href="/mgr/index.php"><font color=red>Login</font></a></li>
+					<li><a href="index.php"><font color=red>Login</font></a></li>
 					<?php
 					}
 					?>
@@ -370,7 +370,7 @@ if (@$_GET['act'] == "logout")
 				{
 				?>
 				<BR><b>Login</b><BR><BR>
-				<form action="/mgr/index.php" method="POST">
+				<form action="index.php" method="POST">
 				<table border=0 cellspacing=2 cellpadding=2>
 				<tr><td>Username</td><td width=20>&nbsp;</td><td><input type="text" name="userName"></td></tr>
 				<tr><td>Password</td><td width=20>&nbsp;</td><td><input type="password" name="userPass"></td></tr>
@@ -384,7 +384,7 @@ if (@$_GET['act'] == "logout")
 				{
                     if ($blockReaderDef != "BLOCKREADERDEF")
                     {
-					    echo "<h3>Product overview</h3>-&nbsp;<a href=\"/mgr/products.php?act=newpackage\">New Block Account</a><BR><BR>\n";
+					    echo "<h3>Product overview</h3>-&nbsp;<a href=\"products.php?act=newpackage\">New Block Account</a><BR><BR>\n";
                     }
                      else
                     {
@@ -406,7 +406,7 @@ if (@$_GET['act'] == "logout")
 					// Query
 					$sql = "SELECT pkgId, pkgName, pkgDef, pkgQuota, pkgPrice, provider, pkgActie, sortID ";
 					$sql .= "FROM Packages ORDER BY pkgId";
-					$res = @mysql_query($sql, $wwnl->DB_Conn());
+					$res = @mysql_query($sql, $tadm->DB_Conn());
 					$row = @mysql_num_rows($res);
 					
 					for ($x = 0; $x < $row; $x++)
@@ -445,9 +445,9 @@ if (@$_GET['act'] == "logout")
 						echo "</td><td nowrap align=right>";
 						echo $dat['sortID'];
 						echo "</td><td nowrap align=left>";
-						echo "<a href=\"/mgr/products.php?act=edit&id=".$dat['pkgId']."\"><img border=0 src=\"/mgr/images/edit.gif\" width=20></a>";
+						echo "<a href=\"products.php?act=edit&id=".$dat['pkgId']."\"><img border=0 src=\"/mgr/images/edit.gif\" width=20></a>";
 						echo "&nbsp;";
-						echo "<a href=\"/mgr/products.php?act=delete&id=".$dat['pkgId']."\"><img border=0 src=\"/mgr/images/delete.gif\" width=20></a>";
+						echo "<a href=\"products.php?act=delete&id=".$dat['pkgId']."\"><img border=0 src=\"/mgr/images/delete.gif\" width=20></a>";
 						echo "</td>";
 						echo "</tr>";
 					}
@@ -456,7 +456,7 @@ if (@$_GET['act'] == "logout")
                  elseif ($display_editview == true)
                 {
                         echo "&nbsp;<h4>Edit packageID $packageID</h4><BR><BR>";
-                        echo "<form action=\"/mgr/products.php\" method=\"POST\">\n";
+                        echo "<form action=\"products.php\" method=\"POST\">\n";
                         echo "<input type=\"hidden\" name=\"id\" value=\"".$packageID."\">\n";
                         echo "<input type=\"hidden\" name=\"act\" value=\"processedit\">\n";
                         echo "<table border=1 cellspacing=2 cellpadding=2 style=\"table.width: 200px;\">\n";
@@ -478,7 +478,7 @@ if (@$_GET['act'] == "logout")
                         
                         // Check for options
                         $optSQL = "SELECT optionDesc, optionPrice, optionActie, optionID FROM packageOptions WHERE packageID = '$packageID'";
-                        $optRES = @mysql_query($optSQL, $wwnl->DB_Conn());
+                        $optRES = @mysql_query($optSQL, $tadm->DB_Conn());
                         $optROW = @mysql_num_rows($optRES);
                         
                         echo "<tr><td colspan=2>&nbsp;";
@@ -532,7 +532,7 @@ if (@$_GET['act'] == "logout")
                  elseif ($display_newview == true)
                 {
                         echo "&nbsp;<h4>Create new Block Account</h4><BR><BR>";
-                        echo "<form action=\"/mgr/products.php\" method=\"POST\">\n";
+                        echo "<form action=\"products.php\" method=\"POST\">\n";
                         echo "<input type=\"hidden\" name=\"act\" value=\"processnew\">\n";
                         echo "<table border=1 cellspacing=2 cellpadding=2 style=\"table.width: 200px;\">\n";
                         echo "<tr><td>Package Name</td><td>&nbsp;<input type=\"text\" size=\"50\" name=\"pkgName\"></td></tr>\n";
@@ -558,15 +558,15 @@ if (@$_GET['act'] == "logout")
                         if ($packageDetails['pkgQuota'] != "0")
                         {
                             echo "<h3>Are you sure you want to delete product ".$packageDetails['pkgName']." ?</h3><BR><BR>";
-                            echo "<a href=\"/mgr/products.php?act=processdelete&id=".$packageID."&token=".$hashToken."\">Yes</a>";
+                            echo "<a href=\"products.php?act=processdelete&id=".$packageID."&token=".$hashToken."\">Yes</a>";
                             echo "&nbsp;|&nbsp;";
-                            echo "<a href=\"/mgr/products.php\">No</a>";                    
+                            echo "<a href=\"products.php\">No</a>";                    
                         }
                          else
                         {
                             echo "<h3>You are NOT allowed to delete FLAT Accounts</h3><BR>";
                             echo "<BR>";
-                            echo "<a href=\"/mgr/products.php\">Back</a>";                    
+                            echo "<a href=\"products.php\">Back</a>";                    
                         }
                 }
                  elseif ($display_resultpage == true)
@@ -590,7 +590,7 @@ if (@$_GET['act'] == "logout")
 		
 		<!-- footer -->
 		<div class="gt-footer">
-			<p>Copyright &copy; <?php echo $wwnl->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
+			<p>Copyright &copy; <?php echo $tadm->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
 		</div>
 		<!-- /footer -->
 	</body>

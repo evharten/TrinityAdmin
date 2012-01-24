@@ -1,5 +1,5 @@
 <?php
-class WoWNL
+class TrinityAdmin
 {
 	// Set Private Vars
 	private $dbHost = '';
@@ -9,8 +9,7 @@ class WoWNL
 	function __construct()
 	{
 		global $siteName, $copyRight, $logondb, $char1db, $char2db, $world1db, $world2db;
-		$curPath = "/home/sites/wownl.net/inc";
-		@include_once($curPath . "/conf.inc.php");
+		@include_once("inc/conf.inc.php");
 		
 		// Set variables
 		$this->dbHost = DBHOST;

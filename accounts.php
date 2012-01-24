@@ -1,5 +1,5 @@
 <?php
-@include_once("../../inc/functions.inc.php");
+@include_once("inc/functions.inc.php");
 session_start();
 
 // Last modified: 27012011
@@ -15,14 +15,14 @@ $display_resultpage = false;
 $loggedin = false;
 
 // Start UseNet
-$wwnl = new WoWNL();
-$wwnl->__construct();
+$tadm = new TrinityAdmin();
+$tadm->__construct();
 
 if (@$_GET['act'] == "logout")
 {
 	session_unregister("adminId");
 	session_destroy();
-	header("Location: /mgr/");
+	header("Location: ");
 }
  elseif (@$_SESSION["adminId"])
 {
@@ -67,9 +67,9 @@ if (@$_GET['act'] == "logout")
 	    $display_overview = false;
 	    $display_resultpage = true;
 	    $custID = stripslashes($_GET['id']);
-	    $currentDetails = $wwnl->GetUserDetails($custID);
+	    $currentDetails = $tadm->GetUserDetails($custID);
 	    $custUser = $currentDetails['Username'];
-	    $custPass = $wwnl->GetPass($custID, $custUser);
+	    $custPass = $tadm->GetPass($custID, $custUser);
 	    $resulttext = "Testing useraccount $custUser ..... ";
 		
 	    if (require_once('Net/NNTP/Client.php'))
@@ -128,8 +128,8 @@ if (@$_GET['act'] == "logout")
             $display_resultpage = true;
             $resulttext = "";
             $custID = stripslashes($_POST['id']);
-            $currentDetails = $wwnl->GetUserDetails($custID);
-	    $userComments = $wwnl->getComments($custID);
+            $currentDetails = $tadm->GetUserDetails($custID);
+	    $userComments = $tadm->getComments($custID);
             
             $username = $currentDetails['Username'];
 	
@@ -145,7 +145,7 @@ if (@$_GET['act'] == "logout")
 			$updQry = "INSERT INTO AccountComments VALUES ('$custID', '$newComments')";
 		}
 		
-		if (@mysql_query($updQry, $wwnl->DBConn()))
+		if (@mysql_query($updQry, $tadm->DBConn()))
 		{
 			$resulttext .= "Updating comments: OK<BR>";
 		}
@@ -163,7 +163,7 @@ if (@$_GET['act'] == "logout")
                 // Update Email address
                 $updQry = "UPDATE Accounts SET Email = '$newEmail' WHERE userId = '$custID'";
                 
-                if (@mysql_query($updQry, $wwnl->DBConn()))
+                if (@mysql_query($updQry, $tadm->DBConn()))
                 {
                     $resulttext .= "Updating email address: OK<BR>";
                 }
@@ -175,10 +175,10 @@ if (@$_GET['act'] == "logout")
             }
             
             // Include usenet provider for updates
-            $pkgDetail = $wwnl->GetPackageDetails(stripslashes($_POST['pkgId']));
+            $pkgDetail = $tadm->GetPackageDetails(stripslashes($_POST['pkgId']));
             $newPackageType = $pkgDetail['pkgDef'];
             
-            $Pakket_Provider = $wwnl->GetProvider($currentDetails['atype']);
+            $Pakket_Provider = $tadm->GetProvider($currentDetails['atype']);
             $Pakket_temp = explode(":", $newPackageType);
             $Pakket = $Pakket_temp[0];
             if (!empty($Pakket_temp[1]))
@@ -213,7 +213,7 @@ if (@$_GET['act'] == "logout")
                     
                     // Oude gegevens opsnorren
                     $oldQry = "SELECT Username, Password FROM Accounts WHERE userId = '$custID'";
-                    $oldRes = @mysql_query($oldQry, $wwnl->DBConn());
+                    $oldRes = @mysql_query($oldQry, $tadm->DBConn());
                     $oldDat = @mysql_fetch_assoc($oldRes);
                     $oldUser = $oldDat['Username'];
                     $oldPass = $oldDat['Password'];
@@ -230,7 +230,7 @@ if (@$_GET['act'] == "logout")
                         {
                             $resulttext .= "-- Creating new user: OK<BR>";
                             $newQry = "UPDATE Accounts SET AccountType = '$newPackageType', Expiry = '$expire' WHERE userId = '$custID'";
-                            if (@mysql_query($newQry, $wwnl->DBConn()))
+                            if (@mysql_query($newQry, $tadm->DBConn()))
                             {
                                 $resulttext .= "-- Updating local DB: OK<BR>";
                             }
@@ -262,7 +262,7 @@ if (@$_GET['act'] == "logout")
                     {
                         // Oude gegevens opsnorren
                         $oldQry = "SELECT Username, Password FROM Accounts WHERE userId = '$custID'";
-                        $oldRes = @mysql_query($oldQry, $wwnl->DBConn());
+                        $oldRes = @mysql_query($oldQry, $tadm->DBConn());
                         $oldDat = @mysql_fetch_assoc($oldRes);
                         $oldUser = $oldDat['Username'];
                         $oldPass = $oldDat['Password'];
@@ -279,7 +279,7 @@ if (@$_GET['act'] == "logout")
                             {
                                 $resulttext .= "-- Creating new user: OK<BR>";
                                 $newQry = "UPDATE Accounts SET AccountType = '$newPackageType', Expiry = '0' WHERE userId = '$custID'";
-                                if (@mysql_query($newQry, $wwnl->DBConn()))
+                                if (@mysql_query($newQry, $tadm->DBConn()))
                                 {
                                     $resulttext .= "-- Updating local DB: OK<BR>";
                                 }
@@ -303,7 +303,7 @@ if (@$_GET['act'] == "logout")
                     {
                         // Alleen readerdef bijwerken
                         $updQry = "UPDATE Accounts SET AccountType = '$newPackageType', Expiry = '0' WHERE userId = '$custID'";
-                        if (@mysql_query($updQry, $wwnl->DBConn()))
+                        if (@mysql_query($updQry, $tadm->DBConn()))
                         {
                             $resulttext .= "Updating users AccountType to $newPackageType&nbsp;: OK<BR>";
                         }
@@ -343,7 +343,7 @@ if (@$_GET['act'] == "logout")
                         $newExpire = strtotime($_POST['expireDate']);
                         $updQry = "UPDATE Accounts SET Expiry = '$newExpire' WHERE userId = '$custID'";
                         
-                        if (@mysql_query($updQry, $wwnl->DBConn()))
+                        if (@mysql_query($updQry, $tadm->DBConn()))
                         {
                             // Update at provider
                             $result = $unet->updateuser($username, "expiry", $newExpire);
@@ -373,7 +373,7 @@ if (@$_GET['act'] == "logout")
                 // Update Suspend
                 $updQry = "UPDATE Accounts SET accountSuspended = '$newSuspend' WHERE userId = '$custID'";
                 
-                if (@mysql_query($updQry, $wwnl->DBConn()))
+                if (@mysql_query($updQry, $tadm->DBConn()))
                 {
                     if ($newSuspend == "N")
                     {
@@ -402,7 +402,7 @@ if (@$_GET['act'] == "logout")
             $display_overview = false;
             $custID = stripslashes($_GET['id']);
             $display_deleteview = true;
-            $currentDetails = $wwnl->GetUserDetails($custID);
+            $currentDetails = $tadm->GetUserDetails($custID);
             
             $hashFrom = $custID . "-" . $currentDetails['Username'];
             $hashToken = md5($hashFrom);
@@ -415,7 +415,7 @@ if (@$_GET['act'] == "logout")
             
             $usQry = "SELECT Username, Password, Email FROM Accounts WHERE userId = '$custID'";
             
-            if ($usRes = @mysql_query($usQry, $wwnl->DBConn()))
+            if ($usRes = @mysql_query($usQry, $tadm->DBConn()))
             {
                 // Details mailen   
                 $custDetails = @mysql_fetch_assoc($usRes);
@@ -423,7 +423,7 @@ if (@$_GET['act'] == "logout")
                 $custPassword = $custDetails['Password'];
                 $custEmail = $custDetails['Email'];
                 
-                if ($wwnl->MailDetails($custUsername, $custPassword, $custEmail))
+                if ($tadm->MailDetails($custUsername, $custPassword, $custEmail))
                 {
                     $resulttext .= "Resending details to user: Account details Send.<BR>";
                 }
@@ -447,8 +447,8 @@ if (@$_GET['act'] == "logout")
             $custHash = $_GET['token'];
             
             // Get details
-            $currentDetails = $wwnl->GetUserDetails($custID);
-            $Pakket_Provider = $wwnl->GetProvider($currentDetails['atype']);
+            $currentDetails = $tadm->GetUserDetails($custID);
+            $Pakket_Provider = $tadm->GetProvider($currentDetails['atype']);
             
             // Eerst checken of de hash klopt
             $checkHash = md5($custID . "-" . $currentDetails['Username']);
@@ -470,7 +470,7 @@ if (@$_GET['act'] == "logout")
                         // Delete from DB
                         $delQry = "DELETE FROM Accounts WHERE userId = '$custID' LIMIT 1";
                         
-                        if (@mysql_query($delQry, $wwnl->DBConn()))
+                        if (@mysql_query($delQry, $tadm->DBConn()))
                         {
                             // Delete OK
                             $resulttext .= "Deleting user: User removed from provider and our DB<BR>";
@@ -510,19 +510,19 @@ if (@$_GET['act'] == "logout")
             $custUsername = stripslashes($_POST['custUsername']);
             $custEmail = stripslashes($_POST['custEmail']);
             $custPackageID = stripslashes($_POST['pkgId']);
-            $custPassword = $wwnl->GeneratePass();
+            $custPassword = $tadm->GeneratePass();
             
             // Check if user exists
-            if ($wwnl->validUser($custUsername))
+            if ($tadm->validUser($custUsername))
             {
                 // Alter username with prefix
                 $custUsername = USERNAME_PREFIX . $custUsername;
                 
                 // Valid user go on checking email adres
-                if ($wwnl->validEmail($custEmail))
+                if ($tadm->validEmail($custEmail))
                 {
                     // Valid Email
-                    $packageDetails = $wwnl->GetPackageDetails($custPackageID);
+                    $packageDetails = $tadm->GetPackageDetails($custPackageID);
                     
                     $pkgDef = $packageDetails['pkgDef'];
                     
@@ -538,7 +538,7 @@ if (@$_GET['act'] == "logout")
                         $Pakket_Quota = "";
                     }
 
-                    $Pakket_Provider = $wwnl->GetProvider($pkgDef);
+                    $Pakket_Provider = $tadm->GetProvider($pkgDef);
                     
                     // try to include Package provider
                     if ($Pakket_Provider != "NA")
@@ -566,7 +566,7 @@ if (@$_GET['act'] == "logout")
                             // User OK
                             $qry = "INSERT INTO Accounts (Username, Password, Email, AccountType, Expiry) VALUES ";
                             $qry .= "('$custUsername', '$custPassword', '$custEmail', '$pkgDef', '$expire')";
-                            if (@mysql_query($qry, $wwnl->DBConn()))
+                            if (@mysql_query($qry, $tadm->DBConn()))
                             {
                                 // User ok into DB
                                 $resulttext .= "Creating user: Created user.<BR>";
@@ -574,7 +574,7 @@ if (@$_GET['act'] == "logout")
                                 $resulttext .= "Password: $custPassword<BR>";
                                 $resulttext .= "<BR>";
                                 $resulttext .= "Emailing new user account details to $custEmail.<BR>";
-                                $wwnl->MailDetails($custUsername, $custPassword, $custEmail);
+                                $tadm->MailDetails($custUsername, $custPassword, $custEmail);
                             }
                              else
                             {
@@ -618,12 +618,12 @@ if (@$_GET['act'] == "logout")
 	$userName = $_POST['userName'];
 	$userPass = $_POST['userPass'];
 	
-	$loginResult = $wwnl->AuthAdminUser($userName, $userPass);
+	$loginResult = $tadm->AuthAdminUser($userName, $userPass);
 	
 	if ($loginResult != "fail")
 	{
 		$_SESSION['adminId'] = $loginResult['userId'];
-		header("Location: /mgr/index.php");
+		header("Location: index.php");
 	}
 	 else
 	{
@@ -638,12 +638,12 @@ if (@$_GET['act'] == "logout")
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><?php echo $wwnl->siteName; ?> | GM Accounts</title>
+		<title><?php echo $tadm->siteName; ?> | GM Accounts</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta http-equiv="Expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 		<meta http-equiv="Pragma" content="no-cache" />
-		<link rel="stylesheet" href="/mgr/css/reset-fonts.css" type="text/css" media="screen, projection" />
-		<link rel="stylesheet" href="/mgr/css/gt-styles.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="css/reset-fonts.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="css/gt-styles.css" type="text/css" media="screen, projection" />
         <link rel="stylesheet" type="text/css" media="all" href="/css/jsDatePick_ltr.min.css" />
         <script type="text/javascript" src="/js/jquery.1.4.2.js"></script>
         <script type="text/javascript" src="/js/jsDatePick.jquery.min.1.3.js"></script>
@@ -653,7 +653,7 @@ if (@$_GET['act'] == "logout")
 		<div class="gt-hd clearfix">
 			<!-- logo -->
 			<div class="gt-logo">
-				<?php echo $wwnl->siteName; ?> - Admin Control Panel
+				<?php echo $tadm->siteName; ?> - Admin Control Panel
 			</div>
 			<!-- / logo -->
 			
@@ -664,20 +664,20 @@ if (@$_GET['act'] == "logout")
 					if ($loggedin == true)
 					{
 					?>
-					<li><a href="/mgr/index.php">Home</a></lo>
-                                        <li><a href="/mgr/accounts.php"><font color=red>Accounts</font></a></li>
-                                        <li><a href="/mgr/char_r1.php">Chars Nebuchadnezzar</a></li>
-                                        <li><a href="/mgr/char_r2.php">Chars Icharus</a></li>
-                                        <li><a href="/mgr/news.php">Site News</a></li>
-                                        <li><a href="/mgr/newsletter.php">Newsletters</a></li>
-                                        <li><a href="/mgr/logs.php">Logs</a></li>
-                                        <li><a href="/mgr/index.php?act=logout">Logout</a></li>
+					<li><a href="index.php">Home</a></lo>
+                                        <li><a href="accounts.php"><font color=red>Accounts</font></a></li>
+                                        <li><a href="char_r1.php">Chars Nebuchadnezzar</a></li>
+                                        <li><a href="char_r2.php">Chars Icharus</a></li>
+                                        <li><a href="news.php">Site News</a></li>
+                                        <li><a href="newsletter.php">Newsletters</a></li>
+                                        <li><a href="logs.php">Logs</a></li>
+                                        <li><a href="index.php?act=logout">Logout</a></li>
 					<?php
 					}
 					 else
 					{
 					?>
-					<li><a href="/mgr/index.php"><font color=red>Login</font></a></li>
+					<li><a href="index.php"><font color=red>Login</font></a></li>
 					<?php
 					}
 					?>
@@ -703,7 +703,7 @@ if (@$_GET['act'] == "logout")
 				{
 				?>
 				<BR><b>Login</b><BR><BR>
-				<form action="/mgr/index.php" method="POST">
+				<form action="index.php" method="POST">
 				<table border=0 cellspacing=2 cellpadding=2>
 				<tr><td>Username</td><td width=20>&nbsp;</td><td><input type="text" name="userName"></td></tr>
 				<tr><td>Password</td><td width=20>&nbsp;</td><td><input type="password" name="userPass"></td></tr>
@@ -728,7 +728,7 @@ if (@$_GET['act'] == "logout")
                         $pStop = ($pStart + $uppage);
                     
                         // Get Total user count
-                        $tRes = @mysql_query("SELECT COUNT(id) AS Total FROM ".$wwnl->logondb.".account", $wwnl->DBConn());
+                        $tRes = @mysql_query("SELECT COUNT(id) AS Total FROM ".$tadm->logondb.".account", $wwnl->DBConn());
                         $tDat = @mysql_fetch_assoc($tRes);
                         $tUsers = $tDat['Total'];
                     
@@ -738,7 +738,7 @@ if (@$_GET['act'] == "logout")
                     
 			// User list
 			$sql = "SELECT id, username, email, locked, online, last_login, last_ip ";
-			$sql .= "FROM ".$wwnl->logondb.".account ";
+			$sql .= "FROM ".$tadm->logondb.".account ";
                     
                         // Process Search
                         if (!empty($_GET['search']))
@@ -804,11 +804,11 @@ if (@$_GET['act'] == "logout")
                         $limit = $uppage;
                         $sql .= "LIMIT $pStart, $limit";
                     
-			$res = @mysql_query($sql, $wwnl->DBConn());
+			$res = @mysql_query($sql, $tadm->DBConn());
 			$row = @mysql_num_rows($res);
 					                   
-			echo "<h3>Account overview</h3>-&nbsp;<a href=\"/mgr/accounts.php?act=newuser\">New Account</a><BR><BR>";
-                        echo "<form action=\"/mgr/accounts.php\" method=\"GET\">";
+			echo "<h3>Account overview</h3>-&nbsp;<a href=\"accounts.php?act=newuser\">New Account</a><BR><BR>";
+                        echo "<form action=\"accounts.php\" method=\"GET\">";
                         if (!empty($sort))
                         {
                             echo "<input type=\"hidden\" name=\"sort\" value=\"".$sort."\">\n";
@@ -841,13 +841,13 @@ if (@$_GET['act'] == "logout")
                         {
                             $startLine .= "&search=".$searchText;
                         }
-					    echo "<tr><th nowrap><b><a href=\"/mgr/accounts.php?sort=id&dir=".$direction.$startLine."\">accountID</a></b>&nbsp;</th>";
-                        echo "<th nowrap><b><a href=\"/mgr/accounts.php?sort=username&dir=".$direction.$startLine."\">username</a></b>&nbsp;</th>";
-                        echo "<th nowrap><b><a href=\"/mgr/accounts.php?sort=email&dir=".$direction.$startLine."\">E-mail Address</a></b>&nbsp;</th>";
-                        echo "<th nowrap><b><a href=\"/mgr/accounts.php?sort=locked&dir=".$direction.$startLine."\">Account Locked?</a></b>&nbsp;</th>";
-                        echo "<th nowrap><b><a href=\"/mgr/accounts.php?sort=online&dir=".$direction.$startLine."\">Online?</a></b>&nbsp;</th>";
-                        echo "<th nowrap><b><a href=\"/mgr/accounts.php?sort=last_login&dir=".$direction.$startLine."\">Last Login</a></b>&nbsp;</th>";
-                        echo "<th nowrap><b><a href=\"/mgr/accounts.php?sort=last_ip&dir=".$direction.$startLine."\">Login from</a></b>&nbsp;</th>";
+					    echo "<tr><th nowrap><b><a href=\"accounts.php?sort=id&dir=".$direction.$startLine."\">accountID</a></b>&nbsp;</th>";
+                        echo "<th nowrap><b><a href=\"accounts.php?sort=username&dir=".$direction.$startLine."\">username</a></b>&nbsp;</th>";
+                        echo "<th nowrap><b><a href=\"accounts.php?sort=email&dir=".$direction.$startLine."\">E-mail Address</a></b>&nbsp;</th>";
+                        echo "<th nowrap><b><a href=\"accounts.php?sort=locked&dir=".$direction.$startLine."\">Account Locked?</a></b>&nbsp;</th>";
+                        echo "<th nowrap><b><a href=\"accounts.php?sort=online&dir=".$direction.$startLine."\">Online?</a></b>&nbsp;</th>";
+                        echo "<th nowrap><b><a href=\"accounts.php?sort=last_login&dir=".$direction.$startLine."\">Last Login</a></b>&nbsp;</th>";
+                        echo "<th nowrap><b><a href=\"accounts.php?sort=last_ip&dir=".$direction.$startLine."\">Login from</a></b>&nbsp;</th>";
                         echo "<th>&nbsp;</th></tr>";
 	
 					    // display users
@@ -898,15 +898,15 @@ if (@$_GET['act'] == "logout")
 						    	echo $dat['last_ip'];
 						    }
 						    echo "&nbsp;</td><td nowrap align=right>";
-						    echo "<a href=\"/mgr/accounts.php?act=edit&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/edit.gif\" width=20></a>";
+						    echo "<a href=\"accounts.php?act=edit&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/edit.gif\" width=20></a>";
                             echo "&nbsp;";
-                            echo "<a href=\"/mgr/accounts.php?act=testuser&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/testUser.jpg\" width=20 alt=\"Test User Account Details\"></a>";
+                            echo "<a href=\"accounts.php?act=testuser&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/testUser.jpg\" width=20 alt=\"Test User Account Details\"></a>";
                             echo "&nbsp;";
-                            echo "<a href=\"/mgr/accounts.php?act=resend&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/email.jpg\" width=20 alt=\"Resend Account Details\"></a>";
+                            echo "<a href=\"accounts.php?act=resend&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/email.jpg\" width=20 alt=\"Resend Account Details\"></a>";
                             echo "&nbsp;";
-                            echo "<a href=\"/mgr/accounts.php?act=loginAsUser&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/key.jpg\" width=20 alt=\"Login to frontpage as this user\"></a>";
+                            echo "<a href=\"accounts.php?act=loginAsUser&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/key.jpg\" width=20 alt=\"Login to frontpage as this user\"></a>";
 						    echo "&nbsp;";
-						    echo "<a href=\"/mgr/accounts.php?act=delete&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/delete.gif\" width=20></a>";
+						    echo "<a href=\"accounts.php?act=delete&id=".$dat['id']."\"><img border=0 src=\"/mgr/images/delete.gif\" width=20></a>";
 						    echo "</td>";
 						    echo "</tr>"; 
 					    }
@@ -925,19 +925,19 @@ if (@$_GET['act'] == "logout")
 				$sortLine = "";
 			}
                         // First
-                        echo "<a href=\"/mgr/accounts.php?pStart=".$cFirst.$sortLine."\"><img src=\"/mgr/images/first.gif\" border=\"0\"></a>";
+                        echo "<a href=\"accounts.php?pStart=".$cFirst.$sortLine."\"><img src=\"/mgr/images/first.gif\" border=\"0\"></a>";
                         // Prev
                         if ($pStart != 0)
                         {
                             if (!($cPrev < 0))
                             {
-                                echo "<a href=\"/mgr/accounts.php?pStart=".$cPrev.$sortLine."\"><img src=\"/mgr/images/prev.gif\" border=\"0\"></a>";
+                                echo "<a href=\"accounts.php?pStart=".$cPrev.$sortLine."\"><img src=\"/mgr/images/prev.gif\" border=\"0\"></a>";
                             }
                         }
                         // Next
                         if (!($cNext > $tUsers))
                         {
-                            echo "<a href=\"/mgr/accounts.php?pStart=".$cNext.$sortLine."\"><img src=\"/mgr/images/next.gif\" border=\"0\"></a>";
+                            echo "<a href=\"accounts.php?pStart=".$cNext.$sortLine."\"><img src=\"/mgr/images/next.gif\" border=\"0\"></a>";
                         }
                         // Last
                         echo "</td></tr>";
@@ -947,11 +947,11 @@ if (@$_GET['act'] == "logout")
                      elseif ($display_editview == true)
                     {
                         // Request current details
-                        $userDetails = $wwnl->GetUserDetails($custID);
-			$userComments = $wwnl->getComments($custID);
+                        $userDetails = $tadm->GetUserDetails($custID);
+			$userComments = $tadm->getComments($custID);
                         
                         echo "<BR><h2>Edit userID $custID</h2><BR><BR>\n";
-                        echo "<form action=\"/mgr/accounts.php\" method=\"POST\">\n";
+                        echo "<form action=\"accounts.php\" method=\"POST\">\n";
                         echo "<input type=\"hidden\" name=\"id\" value=\"$custID\">\n";
                         echo "<input type=\"hidden\" name=\"act\" value=\"processedit\">\n";
                         echo "<table border=1 cellspacing=2 cellpadding=2>\n";
@@ -963,7 +963,7 @@ if (@$_GET['act'] == "logout")
                         $pkgDef = $userDetails['atype'];
                         
                         $pSQL = "SELECT pkgId, pkgDef, pkgName FROM Packages ORDER BY pkgId ASC";
-                        $pRES = @mysql_query($pSQL, $wwnl->DBConn());
+                        $pRES = @mysql_query($pSQL, $tadm->DBConn());
                         $pROW = @mysql_num_rows($pRES);
                         
                         for ($x = 0; $x < $pROW; $x++)
@@ -1053,14 +1053,14 @@ if (@$_GET['act'] == "logout")
                         echo "&nbsp;<h4>Delete userID $custID</h4><BR><BR>";
                         echo "<center>";
                         echo "<h3>Are you sure you want to delete user ".$currentDetails['Username']." ?</h3><BR><BR>";
-                        echo "<a href=\"/mgr/accounts.php?act=processdelete&id=".$custID."&token=".$hashToken."\">Yes</a>";
+                        echo "<a href=\"accounts.php?act=processdelete&id=".$custID."&token=".$hashToken."\">Yes</a>";
                         echo "&nbsp;|&nbsp;";
-                        echo "<a href=\"/mgr/accounts.php\">No</a>";
+                        echo "<a href=\"accounts.php\">No</a>";
                     }                    
                      elseif ($display_newview == true)
                     {
                         echo "&nbsp;<h3>Create new user</h4><BR><BR>";
-                        echo "<form action=\"/mgr/accounts.php\" method=\"POST\">\n";
+                        echo "<form action=\"accounts.php\" method=\"POST\">\n";
                         echo "<input type=\"hidden\" name=\"act\" value=\"processnewuser\">\n";
                         echo "<table border=1 cellspacing=2 cellpadding=2>\n";
                         
@@ -1069,7 +1069,7 @@ if (@$_GET['act'] == "logout")
                         echo "<tr><td>Account Type</td><td>&nbsp;&nbsp;<select name=\"pkgId\">\n";
                                                
                         $pSQL = "SELECT pkgId, pkgDef, pkgName FROM Packages ORDER BY pkgId ASC";
-                        $pRES = @mysql_query($pSQL, $wwnl->DBConn());
+                        $pRES = @mysql_query($pSQL, $tadm->DBConn());
                         $pROW = @mysql_num_rows($pRES);
                         
                         for ($x = 0; $x < $pROW; $x++)
@@ -1107,7 +1107,7 @@ if (@$_GET['act'] == "logout")
 		
 		<!-- footer -->
 		<div class="gt-footer">
-			<p>Copyright &copy; <?php echo $wwnl->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
+			<p>Copyright &copy; <?php echo $tadm->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
 		</div>
 		<!-- /footer -->
 	</body>

@@ -1,5 +1,5 @@
 <?php
-@include_once("../../inc/functions.inc.php");
+@include_once("inc/functions.inc.php");
 session_start();
 
 // Last modified: 13042011
@@ -8,14 +8,14 @@ session_start();
 $display_login = true;
 $display_overview = false;
 
-$wwnl = new WoWNL();
-$wwnl->__construct();
+$tadm = new TrinityAdmin();
+$tadm->__construct();
 
 if (@$_GET['act'] == "logout")
 {
 	session_unregister("adminId");
 	session_destroy();
-	header("Location: /mgr/");
+	header("Location: ");
 }
  elseif (@$_SESSION["adminId"])
 {
@@ -47,12 +47,12 @@ if (@$_GET['act'] == "logout")
 	$userName = $_POST['userName'];
 	$userPass = $_POST['userPass'];
 	
-	$loginResult = $wwnl->AuthAdminUser($userName, $userPass);
+	$loginResult = $tadm->AuthAdminUser($userName, $userPass);
 	
 	if ($loginResult != "fail")
 	{
 		$_SESSION['adminId'] = $loginResult['userId'];
-		header("Location: /mgr/index.php");
+		header("Location: index.php");
 	}
 	 else
 	{
@@ -67,7 +67,7 @@ if (@$_GET['act'] == "logout")
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><?php echo $wwnl->siteName; ?> | Logs</title>
+		<title><?php echo $tadm->siteName; ?> | Logs</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta http-equiv="Expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 		<meta http-equiv="Pragma" content="no-cache" />
@@ -80,7 +80,7 @@ if (@$_GET['act'] == "logout")
 		<div class="gt-hd clearfix">
 			<!-- logo -->
 			<div class="gt-logo">
-				<?php echo $wwnl->siteName; ?> - Admin Control Panel
+				<?php echo $tadm->siteName; ?> - Admin Control Panel
 			</div>
 			<!-- / logo -->
 			
@@ -91,20 +91,20 @@ if (@$_GET['act'] == "logout")
 					if ($loggedin == true)
 					{
 					?>
-                                        <li><a href="/mgr/index.php">Home</a></li>
-                                        <li><a href="/mgr/accounts.php">Accounts</a></li>
-                                        <li><a href="/mgr/char_r1.php">Chars Nebuchadnezzar</a></li>
-                                        <li><a href="/mgr/char_r2.php">Chars Icharus</a></li>
-                                        <li><a href="/mgr/news.php">Site News</a></li>
-                                        <li><a href="/mgr/newsletter.php">Newsletters</a></li>
-                                        <li><a href="/mgr/logs.php"><font color=red>Logs</font></a></li>
-                                        <li><a href="/mgr/index.php?act=logout">Logout</a></li>
+                                        <li><a href="index.php">Home</a></li>
+                                        <li><a href="accounts.php">Accounts</a></li>
+                                        <li><a href="char_r1.php">Chars Nebuchadnezzar</a></li>
+                                        <li><a href="char_r2.php">Chars Icharus</a></li>
+                                        <li><a href="news.php">Site News</a></li>
+                                        <li><a href="newsletter.php">Newsletters</a></li>
+                                        <li><a href="logs.php"><font color=red>Logs</font></a></li>
+                                        <li><a href="index.php?act=logout">Logout</a></li>
 					<?php
 					}
 					 else
 					{
 					?>
-					<li><a href="/mgr/index.php"><font color=red>Login</font></a></li>
+					<li><a href="index.php"><font color=red>Login</font></a></li>
 					<?php
 					}
 					?>
@@ -130,7 +130,7 @@ if (@$_GET['act'] == "logout")
 				{
 				?>
 				<BR><b>Login</b><BR><BR>
-				<form action="/mgr/index.php" method="POST">
+				<form action="index.php" method="POST">
 				<table border=0 cellspacing=2 cellpadding=2>
 				<tr><td>Username</td><td width=20>&nbsp;</td><td><input type="text" name="userName"></td></tr>
 				<tr><td>Password</td><td width=20>&nbsp;</td><td><input type="password" name="userPass"></td></tr>
@@ -143,7 +143,7 @@ if (@$_GET['act'] == "logout")
 				 elseif ($display_overview == true)
 				{
 					echo "<h3>Transaction overview</h3><br /><br />";
-					echo "<form action=\"/mgr/logs.php\" method=\"GET\">\n";
+					echo "<form action=\"logs.php\" method=\"GET\">\n";
 					if (!empty($sort))
 					{
 						echo "<input type=\"hidden\" name=\"sort\" value=\"".$sort."\">\n";
@@ -190,7 +190,7 @@ if (@$_GET['act'] == "logout")
 					$sql .= "ORDER BY logID DESC";
 
 					echo "Q: $sql<BR><BR>";
-					$res = @mysql_query($sql, $wwnl->DB_Conn());
+					$res = @mysql_query($sql, $tadm->DB_Conn());
 					$row = @mysql_num_rows($res);
 					
 					for ($x = 0; $x < $row; $x++)
@@ -261,7 +261,7 @@ if (@$_GET['act'] == "logout")
 		
 		<!-- footer -->
 		<div class="gt-footer">
-			<p>Copyright &copy; <?php echo $wwnl->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
+			<p>Copyright &copy; <?php echo $tadm->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
 		</div>
 		<!-- /footer -->
 	</body>

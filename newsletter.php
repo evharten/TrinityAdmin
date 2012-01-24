@@ -1,5 +1,5 @@
 <?php
-@include_once("../../inc/functions.inc.php");
+@include_once("inc/functions.inc.php");
 session_start();
 
 // Last modified: 13042011
@@ -12,14 +12,14 @@ $display_deleteview = false;
 $display_newview = false;
 $display_resultpage = false;
 
-$wwnl = new WoWNL();
-$wwnl->__construct();
+$tadm = new TrinityAdmin();
+$tadm->__construct();
 
 if (@$_GET['act'] == "logout")
 {
 	session_unregister("adminId");
 	session_destroy();
-	header("Location: /mgr/");
+	header("Location: ");
 }
  elseif (@$_SESSION["adminId"])
 {
@@ -45,7 +45,7 @@ if (@$_GET['act'] == "logout")
             
             // Get Coupon Data
             $couponSQL = "SELECT * FROM Coupons WHERE couponID = '$couponID'";
-            $couponRES = @mysql_query($couponSQL, $wwnl->DB_Conn());
+            $couponRES = @mysql_query($couponSQL, $tadm->DB_Conn());
             $couponDAT = @mysql_fetch_assoc($couponRES);
             
             break;;
@@ -63,14 +63,14 @@ if (@$_GET['act'] == "logout")
             
             // Get Coupon Data
             $couponSQL = "SELECT * FROM Coupons WHERE couponID = '$couponID'";
-            $couponRES = @mysql_query($couponSQL, $wwnl->DB_Conn());
+            $couponRES = @mysql_query($couponSQL, $tadm->DB_Conn());
             $couponDAT = @mysql_fetch_assoc($couponRES);
 
             if ($couponDAT['couponCode'] != $couponCode)
             {
                 // Update code
                 $updQry = "UPDATE Coupons SET couponCode = '$couponCode' WHERE couponID='$couponID'";
-                if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                if (@mysql_query($updQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Updating couponCode: OK<BR>";
                 }
@@ -84,7 +84,7 @@ if (@$_GET['act'] == "logout")
 	    {
 		// Update code
 		$updQry = "UPDATE Coupons SET couponUsertype = '$couponUsertype' WHERE couponID='$couponID'";
-		if (@mysql_query($updQry, $wwnl->DB_Conn()))
+		if (@mysql_query($updQry, $tadm->DB_Conn()))
 		{
 		    $resulttext .= "Updating couponUsertype: OK<BR>";
 		}
@@ -98,7 +98,7 @@ if (@$_GET['act'] == "logout")
             {
                 // Update Couponpercentage
                 $updQry = "UPDATE Coupons SET couponPercentage = '$couponPercentage', couponAmount = '0.00' WHERE couponID = '$couponID'";
-                if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                if (@mysql_query($updQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Updating couponPercentage: OK<BR>";
                 }
@@ -113,7 +113,7 @@ if (@$_GET['act'] == "logout")
                 if ($couponDAT['couponAmount'] != $couponAmount)
                 {
                     $updQry = "UPDATE Coupons SET couponPercentage = '0', couponAmount = '$couponAmount' WHERE couponID = '$couponID'";
-                    if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                    if (@mysql_query($updQry, $tadm->DB_Conn()))
                     {
                         $resulttext .= "Updating couponAmount: OK<BR>";                       
                     }
@@ -128,7 +128,7 @@ if (@$_GET['act'] == "logout")
             {
                 // Update valid on
                 $updQry = "UPDATE Coupons SET couponPackage = '$couponPackage' WHERE couponID = '$couponID'";
-                if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                if (@mysql_query($updQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Updating couponPackage: OK<BR>";
                 }
@@ -142,7 +142,7 @@ if (@$_GET['act'] == "logout")
             {
                 // Update comment
                 $updQry = "UPDATE Coupons SET couponComment = '$couponComment' WHERE couponID = '$couponID'";
-                if (@mysql_query($updQry, $wwnl->DB_Conn()))
+                if (@mysql_query($updQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Updating couponComment: OK<BR>";
                 }
@@ -160,7 +160,7 @@ if (@$_GET['act'] == "logout")
 
             // Get Coupon Data
             $couponSQL = "SELECT couponCode FROM Coupons WHERE couponID = '$couponID'";
-            $couponRES = @mysql_query($couponSQL, $wwnl->DB_Conn());
+            $couponRES = @mysql_query($couponSQL, $tadm->DB_Conn());
             $couponDAT = @mysql_fetch_assoc($couponRES);
                        
             $hashFrom = $couponID . "-" . $couponDAT['couponCode'];;
@@ -175,7 +175,7 @@ if (@$_GET['act'] == "logout")
             
             // Get Coupon Data
             $couponSQL = "SELECT * FROM Coupons WHERE couponID = '$couponID'";
-            $couponRES = @mysql_query($couponSQL, $wwnl->DB_Conn());
+            $couponRES = @mysql_query($couponSQL, $tadm->DB_Conn());
             $couponDAT = @mysql_fetch_assoc($couponRES);
             
             $checkHash = md5($couponID . "-" . $couponDAT['couponCode']);
@@ -183,7 +183,7 @@ if (@$_GET['act'] == "logout")
             if ($couponHash == $checkHash)
             {
                 $delQry = "DELETE FROM Coupons WHERE couponID = '$couponID'";
-                if (@mysql_query($delQry, $wwnl->DB_Conn()))
+                if (@mysql_query($delQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Deleting coupon: Deleted!<BR>";                    
                 }
@@ -227,7 +227,7 @@ if (@$_GET['act'] == "logout")
                     $insQry = "INSERT INTO Coupons VALUES ('', '$couponCode', '0', '$couponAmount', '$couponPackage', '$couponUsertype', '$couponComment')";
                 }
                 
-                if (@mysql_query($insQry, $wwnl->DB_Conn()))
+                if (@mysql_query($insQry, $tadm->DB_Conn()))
                 {
                     $resulttext .= "Create coupon: Coupon created.<BR>";
                 }
@@ -255,12 +255,12 @@ if (@$_GET['act'] == "logout")
 	$userName = $_POST['userName'];
 	$userPass = $_POST['userPass'];
 	
-	$loginResult = $wwnl->AuthAdminUser($userName, $userPass);
+	$loginResult = $tadm->AuthAdminUser($userName, $userPass);
 	
 	if ($loginResult != "fail")
 	{
 		$_SESSION['adminId'] = $loginResult['userId'];
-		header("Location: /mgr/index.php");
+		header("Location: index.php");
 	}
 	 else
 	{
@@ -275,7 +275,7 @@ if (@$_GET['act'] == "logout")
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><?php echo $wwnl->siteName; ?> | Newsletters</title>
+		<title><?php echo $tadm->siteName; ?> | Newsletters</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<meta http-equiv="Expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
 		<meta http-equiv="Pragma" content="no-cache" />
@@ -288,7 +288,7 @@ if (@$_GET['act'] == "logout")
 		<div class="gt-hd clearfix">
 			<!-- logo -->
 			<div class="gt-logo">
-				<?php echo $wwnl->siteName; ?> - Admin Control Panel
+				<?php echo $tadm->siteName; ?> - Admin Control Panel
 			</div>
 			<!-- / logo -->
 			
@@ -299,20 +299,20 @@ if (@$_GET['act'] == "logout")
 					if ($loggedin == true)
 					{
 					?>
-                                        <li><a href="/mgr/index.php">Home</a></li>
-                                        <li><a href="/mgr/accounts.php">Accounts</a></li>
-                                        <li><a href="/mgr/char_r1.php">Chars Nebuchadnezzar</a></li>
-                                        <li><a href="/mgr/char_r2.php">Chars Icharus</a></li>
-                                        <li><a href="/mgr/news.php">Site News</a></li>
-                                        <li><a href="/mgr/newsletter.php"><font color=red>Newsletters</font></a></li>
-                                        <li><a href="/mgr/logs.php">Logs</a></li>
-                                        <li><a href="/mgr/index.php?act=logout">Logout</a></li>
+                                        <li><a href="index.php">Home</a></li>
+                                        <li><a href="accounts.php">Accounts</a></li>
+                                        <li><a href="char_r1.php">Chars Nebuchadnezzar</a></li>
+                                        <li><a href="char_r2.php">Chars Icharus</a></li>
+                                        <li><a href="news.php">Site News</a></li>
+                                        <li><a href="newsletter.php"><font color=red>Newsletters</font></a></li>
+                                        <li><a href="logs.php">Logs</a></li>
+                                        <li><a href="index.php?act=logout">Logout</a></li>
 					<?php
 					}
 					 else
 					{
 					?>
-					<li><a href="/mgr/index.php"><font color=red>Login</font></a></li>
+					<li><a href="index.php"><font color=red>Login</font></a></li>
 					<?php
 					}
 					?>
@@ -338,7 +338,7 @@ if (@$_GET['act'] == "logout")
 				{
 				?>
 				<BR><b>Login</b><BR><BR>
-				<form action="/mgr/index.php" method="POST">
+				<form action="index.php" method="POST">
 				<table border=0 cellspacing=2 cellpadding=2>
 				<tr><td>Username</td><td width=20>&nbsp;</td><td><input type="text" name="userName"></td></tr>
 				<tr><td>Password</td><td width=20>&nbsp;</td><td><input type="password" name="userPass"></td></tr>
@@ -350,7 +350,7 @@ if (@$_GET['act'] == "logout")
 				}
 				 elseif ($display_overview == true)
 				{
-					echo "<h3>Discount codes overview</h3>-&nbsp;<a href=\"/mgr/coupons.php?act=newcoupon\">New Discount Code</a><BR><BR>";
+					echo "<h3>Discount codes overview</h3>-&nbsp;<a href=\"coupons.php?act=newcoupon\">New Discount Code</a><BR><BR>";
 					echo "<table border=1 cellspacing=2 cellpadding=2>";
 					echo "<tr>";
 					echo "<th><B>couponID</B>&nbsp;</th>";
@@ -366,7 +366,7 @@ if (@$_GET['act'] == "logout")
 					// Query
 					$sql = "SELECT couponID, couponComment, couponCode, couponPercentage, couponAmount, couponPackage, couponUsertype ";
 					$sql .= "FROM Coupons";
-					$res = @mysql_query($sql, $wwnl->DB_Conn());
+					$res = @mysql_query($sql, $tadm->DB_Conn());
 					$row = @mysql_num_rows($res);
 					
 					for ($x = 0; $x < $row; $x++)
@@ -400,7 +400,7 @@ if (@$_GET['act'] == "logout")
 						echo "</td><td nowrap align=right>&nbsp;";
 						if ($dat['couponPackage'] != "0")
 						{
-							$packageDetails = $wwnl->GetPackageDetails($dat['couponPackage']);
+							$packageDetails = $tadm->GetPackageDetails($dat['couponPackage']);
 							echo $packageDetails['pkgName'];
 						}
 						 else
@@ -421,9 +421,9 @@ if (@$_GET['act'] == "logout")
                             echo "All customers";
                         }
 						echo "</td><td nowrap align=left>";
-						echo "<a href=\"/mgr/coupons.php?act=edit&id=".$dat['couponID']."\"><img border=0 src=\"/mgr/images/edit.gif\" width=20></a>";
+						echo "<a href=\"coupons.php?act=edit&id=".$dat['couponID']."\"><img border=0 src=\"/mgr/images/edit.gif\" width=20></a>";
 						echo "&nbsp;";
-						echo "<a href=\"/mgr/coupons.php?act=delete&id=".$dat['couponID']."\"><img border=0 src=\"/mgr/images/delete.gif\" width=20></a>";
+						echo "<a href=\"coupons.php?act=delete&id=".$dat['couponID']."\"><img border=0 src=\"/mgr/images/delete.gif\" width=20></a>";
 						echo "</td>";
 						echo "</tr>";
 					}
@@ -433,7 +433,7 @@ if (@$_GET['act'] == "logout")
                  elseif ($display_editview == true)
                 {
                         echo "&nbsp;<h4>Edit couponID $couponID</h4><BR><BR>";
-                        echo "<form action=\"/mgr/coupons.php\" method=\"POST\">\n";
+                        echo "<form action=\"coupons.php\" method=\"POST\">\n";
                         echo "<input type=\"hidden\" name=\"id\" value=\"".$couponID."\">\n";
                         echo "<input type=\"hidden\" name=\"act\" value=\"processedit\">\n";
                         echo "<table border=1 cellspacing=2 cellpadding=2>\n";
@@ -449,7 +449,7 @@ if (@$_GET['act'] == "logout")
                         $couponPackage = $couponDAT['couponPackage'];
                         
                         $pSQL = "SELECT pkgId, pkgName FROM Packages ORDER BY pkgId ASC";
-                        $pRES = @mysql_query($pSQL, $wwnl->DB_Conn());
+                        $pRES = @mysql_query($pSQL, $tadm->DB_Conn());
                         $pROW = @mysql_num_rows($pRES);
                         
                         if ($couponPackage == "0")
@@ -511,18 +511,18 @@ if (@$_GET['act'] == "logout")
                         echo "&nbsp;<h4>Delete couponID $couponID</h4><BR><BR>";
                         echo "<center>";
                         echo "<h3>Are you sure you want to delete couponCode ".$couponDAT['couponCode']." ?</h3><BR><BR>";
-                        echo "<a href=\"/mgr/coupons.php?act=processdelete&id=".$couponID."&token=".$hashToken."\">Yes</a>";
+                        echo "<a href=\"coupons.php?act=processdelete&id=".$couponID."&token=".$hashToken."\">Yes</a>";
                         echo "&nbsp;|&nbsp;";
-                        echo "<a href=\"/mgr/coupons.php\">No</a>";
+                        echo "<a href=\"coupons.php\">No</a>";
                 }                                    
                  elseif ($display_newview == true)
                 {
                         echo "&nbsp;<h4>Create new Coupon</h4><BR><BR>";
-                        echo "<form action=\"/mgr/coupons.php\" method=\"POST\" name=\"coupons\">\n";
+                        echo "<form action=\"coupons.php\" method=\"POST\" name=\"coupons\">\n";
                         echo "<input type=\"hidden\" name=\"act\" value=\"processnew\">\n";
                         echo "<table border=1 cellspacing=2 cellpadding=2>\n";
                         
-                        $tempCode = $wwnl->GeneratePass(15);
+                        $tempCode = $tadm->GeneratePass(15);
                         
                         echo "<tr><td>couponCode</td><td>&nbsp;&nbsp;<input type=\"text\" size=\"40\" name=\"couponCode\" value=\"".$tempCode."\"></td></tr>\n";
                         echo "<tr><td>Discount percentage</td><td>&nbsp;&nbsp;<input type=\"text\" size=\"40\" name=\"couponPercentage\" value=\"0\">(<font color=red>*</font>)</td></tr>\n";
@@ -533,7 +533,7 @@ if (@$_GET['act'] == "logout")
                         echo "<tr><td>Valid on</td><td>&nbsp;&nbsp;<select name=\"couponPackage\">\n";
                         
                         $pSQL = "SELECT pkgId, pkgName FROM Packages ORDER BY pkgId ASC";
-                        $pRES = @mysql_query($pSQL, $wwnl->DB_Conn());
+                        $pRES = @mysql_query($pSQL, $tadm->DB_Conn());
                         $pROW = @mysql_num_rows($pRES);
                         
                         echo " <option value=\"0\">All packages</option>\n";
@@ -578,7 +578,7 @@ if (@$_GET['act'] == "logout")
 		
 		<!-- footer -->
 		<div class="gt-footer">
-			<p>Copyright &copy; <?php echo $wwnl->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
+			<p>Copyright &copy; <?php echo $tadm->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
 		</div>
 		<!-- /footer -->
 	</body>
