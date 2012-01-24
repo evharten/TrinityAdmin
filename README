@@ -1,0 +1,16 @@
+TrinityAdmin
+============================================
+Current Version: 0.0.1 Beta
+
+Description
+===========
+This is an admin panel for TrinityCore (trinitycore.org) in PHP
+
+Requirements
+===========
+PHP 5.3+
+PHP Soap
+
+Warning
+=======
+The software is delivered AS-IS, no warrenty on it!
