@@ -131,7 +131,7 @@ if (@$_GET['act'] == "logout")
 						$datU = @mysql_fetch_assoc($resU);
 						echo "<B>" . $datU['accounts'] . "</B> Accounts<BR>";
 						echo "<BR>";
-						echo "<table><tr><th>Realm Name</th><th>Characters</th></tr>";
+						echo "<table cellspacing=\"4\" cellpadding=\"1\"><tr><th><B>Realm Name</B></th><th><B>Characters</B></th></tr>";
 						$realmQuery = @mysql_query("SELECT id, name FROM ".$tadm->logondb.".realmlist", $tadm->DBConn());
 						$realmCount = @mysql_num_rows($realmQuery);
 						for ($x = 0; $x < $realmCount; $x++)
