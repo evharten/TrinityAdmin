@@ -95,6 +95,10 @@ class TrinityAdmin
 		{
 			$qry .= ", acp ";
 		}
+		 else
+		{
+			$qry .= " ";
+		}
 		$qry .= "FROM ".$this->logondb.".account ";
 		if ($this->sitedb == "")
 		{

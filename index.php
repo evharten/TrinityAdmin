@@ -29,7 +29,7 @@ if (@$_GET['act'] == "logout")
 	$userPass = $_POST['userPass'];
 	
 	$loginResult = $tadm->AuthAdminUser($userName, $userPass);
-	
+
 	if ($loginResult != "fail")
 	{
 		$_SESSION['adminId'] = $loginResult['userId'];
