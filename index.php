@@ -127,15 +127,19 @@ if (@$_GET['act'] == "logout")
 						echo "<h3>Statistics</h3>";
 						echo "<BR>";
 						echo "Currently we have:<BR><BR>";
-						$resU = @mysql_query("SELECT count(userId) AS users FROM Accounts", $tadm->DB_Conn());
+						$resU = @mysql_query("SELECT count(id) AS accounts FROM ".$tadm->logondb.".account", $tadm->DBConn());
 						$datU = @mysql_fetch_assoc($resU);
-						echo "<B>" . $datU['users'] . "</B> Users<BR>";
-						$resP = @mysql_query("SELECT count(pkgId) AS packages FROM Packages", $tadm->DB_Conn());
-						$datP = @mysql_fetch_assoc($resP);
-						echo "<B>" . $datP['packages'] . "</B> Products<BR>";
-						$resC = @mysql_query("SELECT count(couponID) AS coupons FROM Coupons", $tadm->DB_Conn());
-						$datC = @mysql_fetch_assoc($resC);
-						echo "<B>" . $datC['coupons'] . "</B> Discount codes<BR>";
+						echo "<B>" . $datU['users'] . "</B> Accounts<BR>";
+						echo "<BR>";
+						echo "<table><tr><th>Realm Name</th><th>Characters</th></tr>";
+						$realmQuery = @mysql_query("SELECT id, name FROM ".$tadm->logondb.".realmlist", $tadm->DBConn());
+						$realmCount = @mysql_num_rows($realmQuery);
+						for ($x = 0; $x < $realmCount; $x++)
+						{
+							$realmDAT = @mysql_fetch_assoc($realmQuery);
+							echo "<tr><td>".$realmDAT['name']."</td><td>$charCount</td></tr>";
+						}
+						echo "</table>";
 						echo "<BR>";
                         echo "<table>";
                         echo "<tr><td>";
