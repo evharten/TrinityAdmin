@@ -728,7 +728,7 @@ if (@$_GET['act'] == "logout")
                         $pStop = ($pStart + $uppage);
                     
                         // Get Total user count
-                        $tRes = @mysql_query("SELECT COUNT(id) AS Total FROM ".$tadm->logondb.".account", $wwnl->DBConn());
+                        $tRes = @mysql_query("SELECT COUNT(id) AS Total FROM ".$tadm->logondb.".account", $tadm->DBConn());
                         $tDat = @mysql_fetch_assoc($tRes);
                         $tUsers = $tDat['Total'];
                     
@@ -1107,7 +1107,7 @@ if (@$_GET['act'] == "logout")
 		
 		<!-- footer -->
 		<div class="gt-footer">
-			<p>Copyright &copy; <?php echo $tadm->copyRight; ?> <?php echo $wwnl->siteName; ?></p>
+			<p>Copyright &copy; <?php echo $tadm->copyRight; ?> <?php echo $tadm->siteName; ?></p>
 		</div>
 		<!-- /footer -->
 	</body>
