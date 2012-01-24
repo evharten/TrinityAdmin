@@ -107,8 +107,6 @@ class TrinityAdmin
 		$qry .= "WHERE username = '$user' AND sha_pass_hash = SHA1(CONCAT(UPPER('$user'), ':', UPPER('$pass')))";
                 $res = @mysql_query($qry, $this->DBConn());
 	
-		echo "Q: $qry<BR>";
-
                 if (@mysql_num_rows($res) != "0")
                 {
                         $dat = @mysql_fetch_assoc($res);
