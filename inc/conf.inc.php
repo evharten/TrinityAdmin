@@ -20,5 +20,5 @@ define('CHAR2DB',	'');
 define('WORLD2DB',	'');
 
 // If defined then add the news option
-define('SITEDB',	'azercmsdb');
+define('SITEDB',	'');
 ?>

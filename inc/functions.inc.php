@@ -8,7 +8,7 @@ class TrinityAdmin
 
 	function __construct()
 	{
-		global $siteName, $copyRight, $logondb, $char1db, $char2db, $world1db, $world2db;
+		global $siteName, $copyRight, $logondb, $char1db, $char2db, $world1db, $world2db, $sitedb;
 		@include_once("inc/conf.inc.php");
 		
 		// Set variables
@@ -22,6 +22,7 @@ class TrinityAdmin
 		$this->char2db = CHAR2DB;
 		$this->world1db = WORLD1DB;
 		$this->world2db = WORLD2DB;
+		$this->sitedb = SITEDB;
 	}
 
 	function ExecuteSoap($remote, $user, $passwd, $cmd)
