@@ -4,6 +4,7 @@ session_start();
 
 // Last modified: 24012011
 $loggedin = false;
+$display_login = true;
 
 // Start UseNet
 $tadm = new TrinityAdmin();
@@ -11,7 +12,6 @@ $tadm->__construct();
 
 if (@$_GET['act'] == "logout")
 {
-	session_unregister("adminId");
 	session_destroy();
 	header("Location: ");
 }
