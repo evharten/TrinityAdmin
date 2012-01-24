@@ -1,0 +1,19 @@
+TODO:
+
+[ ] Character list, including username of the account
+[ ] Settings flags of characters/accounts (rename char, char change, faction change, reset trade skills)
+[ ] Character functions: lock, ban, unstuck, kick
+[ ] Reserved names list
+[ ] GM Ticket handling (read, answer, close, delete, reply with item)
+[ ] Character transfer to other account
+[ ] Character transfer to other realm
+[ ] Character copy to GM account (to test bugged chars, or exploiting)
+[ ] Read, transfer, copy, delete GM ingame mails
+[ ] List characters gold amount, gold send/items send (ingame mails)
+[ ] Check players bank/bag, guildbank 
+[ ] Send newsletters
+[ ] Set site news (if you are using Azer CMS2)
+
+Maintaince tasks:
+[ ] Character db cleanup - chars of level under X and more then Y days without login
+
