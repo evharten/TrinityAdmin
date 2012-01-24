@@ -18,4 +18,7 @@ define('WORLD1DB',	'worlddb');
 // If 2 realms then define the following
 define('CHAR2DB',	'');
 define('WORLD2DB',	'');
+
+// If defined then add the news option
+define('SITEDB',	'azercmsdb');
 ?>
