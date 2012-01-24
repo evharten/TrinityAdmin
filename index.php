@@ -129,7 +129,7 @@ if (@$_GET['act'] == "logout")
 						echo "Currently we have:<BR><BR>";
 						$resU = @mysql_query("SELECT count(id) AS accounts FROM ".$tadm->logondb.".account", $tadm->DBConn());
 						$datU = @mysql_fetch_assoc($resU);
-						echo "<B>" . $datU['users'] . "</B> Accounts<BR>";
+						echo "<B>" . $datU['accounts'] . "</B> Accounts<BR>";
 						echo "<BR>";
 						echo "<table><tr><th>Realm Name</th><th>Characters</th></tr>";
 						$realmQuery = @mysql_query("SELECT id, name FROM ".$tadm->logondb.".realmlist", $tadm->DBConn());
@@ -137,6 +137,17 @@ if (@$_GET['act'] == "logout")
 						for ($x = 0; $x < $realmCount; $x++)
 						{
 							$realmDAT = @mysql_fetch_assoc($realmQuery);
+							if ($realmDAT['id'] == "1")
+							{
+								$realmDB = $tadm->char1db;
+							}
+							 else
+							{
+								$realmDB = $tadm->char2db;
+							}
+							$countQRY = @mysql_query("SELECT count(guid) AS chars FROM ".$realmDB.".characters", $tadm->DBConn());
+							$countDAT = @mysql_fetch_assoc($countQRY);
+							$charCount = $countDAT['chars'];
 							echo "<tr><td>".$realmDAT['name']."</td><td>$charCount</td></tr>";
 						}
 						echo "</table>";
