@@ -5,6 +5,8 @@ class TrinityAdmin
 	private $dbHost = '';
 	private $dbUser = '';
 	private $dbPass = '';
+	private $raUser = '';
+	private $raPass = '';
 
 	function __construct()
 	{
@@ -23,9 +25,11 @@ class TrinityAdmin
 		$this->world1db = WORLD1DB;
 		$this->world2db = WORLD2DB;
 		$this->sitedb = SITEDB;
+		$this->raUser = RAUSER;
+		$this->raPass = RAPASS;
 	}
 
-	function ExecuteSoap($remote, $user, $passwd, $cmd)
+	function ExecuteSoap($remote, $cmd)
 	{
         	try
         	{
@@ -33,8 +37,8 @@ class TrinityAdmin
                         	                        "location"      => "http://$remote:7878/",
                                	                 	"uri"           => "urn:TC",
                                	                 	"style"         => SOAP_RPC,
-                               	                 	"login"         => $user,
-                                	                "password"      => $passwd)
+                               	                 	"login"         => $this->raUser,
+                                	                "password"      => $this->raPass)
                                         	);
 
                 	$result = $client->executeCommand(new SoapParam($cmd, "command"));
