@@ -10,7 +10,7 @@ class TrinityAdmin
 
 	function __construct()
 	{
-		global $siteName, $copyRight, $logondb, $char1db, $char2db, $world1db, $world2db, $sitedb;
+		global $siteName, $copyRight, $logondb, $char1db, $char2db, $world1db, $world2db, $sitedb, $siteEmail, $siteEmailFrom;
 		@include_once("inc/conf.inc.php");
 		
 		// Set variables
@@ -27,6 +27,8 @@ class TrinityAdmin
 		$this->sitedb = SITEDB;
 		$this->raUser = RAUSER;
 		$this->raPass = RAPASS;
+		$this->siteEmail = SITEMAIL;
+		$this->siteEmailFrom = SITEMAILFROM;
 	}
 
 	function ExecuteSoap($remote, $cmd)
@@ -57,12 +59,13 @@ class TrinityAdmin
 		$mailAddr = $tomail;
 
 		// Define Vars
-		$fromAddr = "gm@wownl.net";
+		$fromAddr = $this->siteEmail;
+		$fromName = $this->siteEmailFrom;
 		$eol = PHP_EOL;
 		$seperator = md5(time());
 
 		// Headers
-		$headers = "From: \"WoWNL - GM Team\" <$fromAddr>".$eol;
+		$headers = "From: \"$fromName\" <$fromAddr>".$eol;
 		$headers .= "To: \"$toUser\" <$mailAddr>".$eol;
 		$headers .= "Subject: $subject".$eol;
 		$headers .= "MIME-Version: 1.0". $eol;	
